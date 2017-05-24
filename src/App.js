@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import VideoPlayer from './components/VideoPlayer'
-import Speed from './components/Speed'
 import './App.css';
 import * as firebase from 'firebase';
 
@@ -8,7 +7,6 @@ class App extends Component {
   constructor(){
     super();
     this.state = {
-      speed: 10,
       saying: 'Hello',
       imageURL: '',
       videoID: 'p4XTMvagQ2Q',
@@ -19,11 +17,6 @@ class App extends Component {
   componentDidMount(){
     const rootRef = firebase.database().ref().child('react');
     // Attaching data to view
-    rootRef.child('speed').on('value', snap =>{
-        this.setState({
-        speed: snap.val(),
-      })
-    });
     rootRef.child('saying').on('value', snap =>{
         this.setState({
         saying: snap.val()
@@ -51,14 +44,9 @@ class App extends Component {
   changeVideoRef1(){
     const videoRef = firebase.database().ref().child('react').child('videoID').child('vid1');
     let givenURL = this.videoId1.value;
-    let sendURL = givenURL;
+    let sendURL = this.parseYoutubeURL(givenURL);
 
-    if(givenURL.length !== 11){
-      sendURL = givenURL.substr(givenURL.indexOf('=') + 1);
       videoRef.set(sendURL);
-    } else{
-      videoRef.set(sendURL);
-    }
       this.setState({
         videoID: sendURL,
       });
@@ -67,14 +55,9 @@ class App extends Component {
   changeVideoRef2(){
     const videoRef = firebase.database().ref().child('react').child('videoID').child('vid2');
     let givenURL = this.videoId2.value;
-    let sendURL = givenURL;
+    let sendURL = this.parseYoutubeURL(givenURL);
 
-    if(givenURL.length !== 11){
-      sendURL = givenURL.substr(givenURL.indexOf('=') + 1)
       videoRef.set(sendURL);
-    } else{
-      videoRef.set(sendURL);
-    }
       this.setState({
         videoID: sendURL,
       });
@@ -83,22 +66,44 @@ class App extends Component {
   changeVideoRef3(){
     const videoRef = firebase.database().ref().child('react').child('videoID').child('vid3');
     let givenURL = this.videoId3.value;
-    let sendURL = givenURL;
+    let sendURL = this.parseYoutubeURL(givenURL);
 
-    if(givenURL.length !== 11){
-      sendURL = givenURL.substr(givenURL.indexOf('=') + 1)
       videoRef.set(sendURL);
-    } else{
-      videoRef.set(givenURL);
-    }
-
       this.setState({
         videoID: sendURL,
       });
-    
   }
-  parseYoutubeURL(url){
 
+  parseYoutubeURL(url){
+    if(url.length !== 11){
+      return url.substr(url.indexOf('=') + 1);
+    } else{
+      return url;
+    }
+  }
+
+  changeVideoBtn1(){
+    firebase.database().ref().child('react').child('videoID').child('vid1').once('value').then(snap =>{
+      this.setState({
+        videoID: snap.val()
+      });
+    })
+  }
+   
+   changeVideoBtn2(){
+    firebase.database().ref().child('react').child('videoID').child('vid2').once('value').then(snap =>{
+      this.setState({
+        videoID: snap.val()
+      });
+    })
+  }
+
+  changeVideoBtn3(){
+    firebase.database().ref().child('react').child('videoID').child('vid3').once('value').then(snap =>{
+      this.setState({
+        videoID: snap.val()
+      });
+    })
   }
 render() {
   let inputId = 'id-text';
@@ -108,8 +113,6 @@ render() {
 
   return (
     <div className = 'App'>
-      <Speed speed={this.state.speed}/>
-
       <h1>{this.state.saying}</h1>
       <h1>Submit some text</h1>
       <input id='input-id' type="text" ref={(input) => {this.inputId = input}}></input> 
@@ -121,9 +124,9 @@ render() {
       <VideoPlayer videoID={this.state.videoID}/>
       <table id='btn-holder' className='center' width="100%"> 
         <td>
-            <button className='margin3px'>1</button>
-            <button className='margin3px'>2</button>
-            <button className='margin3px'>3</button>
+            <button onClick={this.changeVideoBtn1.bind(this, videoId1)} className='margin3px'>1</button>
+            <button onClick={this.changeVideoBtn2.bind(this, videoId2)} className='margin3px'>2</button>
+            <button onClick={this.changeVideoBtn3.bind(this, videoId3)} className='margin3px'>3</button>
     
             <br/>
 
