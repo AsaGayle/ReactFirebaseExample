@@ -46,6 +46,7 @@ class App extends Component {
     let givenURL = this.videoId1.value;
     let sendURL = this.parseYoutubeURL(givenURL);
 
+      videoRef.set(sendURL);
       this.setState({
         videoID: sendURL,
       });
@@ -56,7 +57,7 @@ class App extends Component {
     let givenURL = this.videoId2.value;
     let sendURL = this.parseYoutubeURL(givenURL);
 
-    videoRef.set(sendURL);
+      videoRef.set(sendURL);
       this.setState({
         videoID: sendURL,
       });
@@ -67,11 +68,12 @@ class App extends Component {
     let givenURL = this.videoId3.value;
     let sendURL = this.parseYoutubeURL(givenURL);
 
+      videoRef.set(sendURL);
       this.setState({
         videoID: sendURL,
       });
-    
   }
+
   parseYoutubeURL(url){
     if(url.length !== 11){
       return url.substr(url.indexOf('=') + 1);
@@ -80,6 +82,29 @@ class App extends Component {
     }
   }
 
+  changeVideoBtn1(){
+    firebase.database().ref().child('react').child('videoID').child('vid1').once('value').then(snap =>{
+      this.setState({
+        videoID: snap.val()
+      });
+    })
+  }
+   
+   changeVideoBtn2(){
+    firebase.database().ref().child('react').child('videoID').child('vid2').once('value').then(snap =>{
+      this.setState({
+        videoID: snap.val()
+      });
+    })
+  }
+
+  changeVideoBtn3(){
+    firebase.database().ref().child('react').child('videoID').child('vid3').once('value').then(snap =>{
+      this.setState({
+        videoID: snap.val()
+      });
+    })
+  }
 render() {
   let inputId = 'id-text';
   let videoId1 = 'video-id1';
@@ -99,9 +124,9 @@ render() {
       <VideoPlayer videoID={this.state.videoID}/>
       <table id='btn-holder' className='center' width="100%"> 
         <td>
-            <button className='margin3px'>1</button>
-            <button className='margin3px'>2</button>
-            <button className='margin3px'>3</button>
+            <button onClick={this.changeVideoBtn1.bind(this, videoId1)} className='margin3px'>1</button>
+            <button onClick={this.changeVideoBtn2.bind(this, videoId2)} className='margin3px'>2</button>
+            <button onClick={this.changeVideoBtn3.bind(this, videoId3)} className='margin3px'>3</button>
     
             <br/>
 
